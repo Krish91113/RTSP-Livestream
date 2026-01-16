@@ -12,6 +12,7 @@ import {
   Settings2,
   Radio,
 } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -59,6 +60,7 @@ export function OverlaySidebar({
   const [isStreamOpen, setIsStreamOpen] = useState(true);
   const [isOverlaysOpen, setIsOverlaysOpen] = useState(true);
   const [isPropertiesOpen, setIsPropertiesOpen] = useState(true);
+  const { toast } = useToast();
 
   const handleAddOverlay = () => {
     if (!newOverlayContent.trim()) return;
@@ -67,6 +69,12 @@ export function OverlaySidebar({
   };
 
   const handleUpdateStream = () => {
+    if (streamUrl.startsWith('rtsp://') || streamUrl.startsWith('udp://')) {
+      toast({
+        title: "Protocol Warning",
+        description: "Browsers cannot directly play RTSP/UDP. Ensure you have a backend transcoder or use HLS (.m3u8).",
+      });
+    }
     onUpdateStreamUrl(streamUrl);
   };
 
@@ -92,9 +100,8 @@ export function OverlaySidebar({
               <span className="font-medium text-sm">Stream Source</span>
             </div>
             <ChevronDown
-              className={`w-4 h-4 text-muted-foreground transition-transform ${
-                isStreamOpen ? 'rotate-180' : ''
-              }`}
+              className={`w-4 h-4 text-muted-foreground transition-transform ${isStreamOpen ? 'rotate-180' : ''
+                }`}
             />
           </CollapsibleTrigger>
           <CollapsibleContent>
@@ -139,9 +146,8 @@ export function OverlaySidebar({
               <span className="font-medium text-sm">Add Overlay</span>
             </div>
             <ChevronDown
-              className={`w-4 h-4 text-muted-foreground transition-transform ${
-                isOverlaysOpen ? 'rotate-180' : ''
-              }`}
+              className={`w-4 h-4 text-muted-foreground transition-transform ${isOverlaysOpen ? 'rotate-180' : ''
+                }`}
             />
           </CollapsibleTrigger>
           <CollapsibleContent>
@@ -209,11 +215,10 @@ export function OverlaySidebar({
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className={`glass-panel p-3 cursor-pointer transition-all ${
-                    selectedOverlay?.id === overlay.id
-                      ? 'ring-2 ring-primary'
-                      : 'hover:bg-card/90'
-                  }`}
+                  className={`glass-panel p-3 cursor-pointer transition-all ${selectedOverlay?.id === overlay.id
+                    ? 'ring-2 ring-primary'
+                    : 'hover:bg-card/90'
+                    }`}
                   onClick={() => onSelectOverlay(overlay.id)}
                 >
                   <div className="flex items-center justify-between">
@@ -270,9 +275,8 @@ export function OverlaySidebar({
                 <span className="font-medium text-sm">Properties</span>
               </div>
               <ChevronDown
-                className={`w-4 h-4 text-muted-foreground transition-transform ${
-                  isPropertiesOpen ? 'rotate-180' : ''
-                }`}
+                className={`w-4 h-4 text-muted-foreground transition-transform ${isPropertiesOpen ? 'rotate-180' : ''
+                  }`}
               />
             </CollapsibleTrigger>
             <CollapsibleContent>

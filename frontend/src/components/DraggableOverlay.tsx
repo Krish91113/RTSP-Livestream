@@ -32,8 +32,11 @@ export function DraggableOverlay({
       const deltaXPercent = (info.offset.x / parentRect.width) * 100;
       const deltaYPercent = (info.offset.y / parentRect.height) * 100;
 
-      const newX = Math.max(0, Math.min(100 - overlay.width, overlay.x + deltaXPercent));
-      const newY = Math.max(0, Math.min(100 - overlay.height, overlay.y + deltaYPercent));
+      // Ensure overlay stays within bounds (0-100%)
+      const maxX = Math.max(0, 100 - overlay.width);
+      const maxY = Math.max(0, 100 - overlay.height);
+      const newX = Math.max(0, Math.min(maxX, overlay.x + deltaXPercent));
+      const newY = Math.max(0, Math.min(maxY, overlay.y + deltaYPercent));
 
       onUpdate({ x: newX, y: newY });
       setIsDragging(false);

@@ -2,6 +2,7 @@ import { useOverlays } from '@/hooks/useOverlays';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { DraggableOverlay } from '@/components/DraggableOverlay';
 import { OverlaySidebar } from '@/components/OverlaySidebar';
+import { Loader2 } from 'lucide-react';
 
 const Index = () => {
   const {
@@ -15,6 +16,7 @@ const Index = () => {
     selectOverlay,
     updateStreamUrl,
     toggleLiveStatus,
+    isLoading,
   } = useOverlays();
 
   return (
@@ -38,16 +40,25 @@ const Index = () => {
         >
           <div className="w-full max-w-5xl">
             <VideoPlayer streamConfig={streamConfig}>
-              {overlays.map((overlay) => (
-                <DraggableOverlay
-                  key={overlay.id}
-                  overlay={overlay}
-                  isSelected={selectedOverlayId === overlay.id}
-                  onSelect={() => selectOverlay(overlay.id)}
-                  onUpdate={(updates) => updateOverlay(overlay.id, updates)}
-                  onDelete={() => deleteOverlay(overlay.id)}
-                />
-              ))}
+              {isLoading ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                  <div className="flex flex-col items-center gap-2">
+                    <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                    <span className="text-sm text-white">Loading overlays...</span>
+                  </div>
+                </div>
+              ) : (
+                overlays.map((overlay) => (
+                  <DraggableOverlay
+                    key={overlay.id}
+                    overlay={overlay}
+                    isSelected={selectedOverlayId === overlay.id}
+                    onSelect={() => selectOverlay(overlay.id)}
+                    onUpdate={(updates) => updateOverlay(overlay.id, updates)}
+                    onDelete={() => deleteOverlay(overlay.id)}
+                  />
+                ))
+              )}
             </VideoPlayer>
 
             {/* Video Controls Info */}
